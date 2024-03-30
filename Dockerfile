@@ -1,16 +1,20 @@
-FROM ubuntu:trusty
-MAINTAINER Feng Honglin <hfeng@tutum.co>
+FROM debian:bookworm-slim
+LABEL maintainer="Feng Honglin <hfeng@tutum.co>"
 
 RUN apt-get update && \
-    apt-get -y --no-install-recommends install openssh-server autossh pwgen sshpass && \
+    apt-get -y --no-install-recommends install openssh-server autossh pwgen sshpass fail2ban && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists && \
     mkdir -p /var/run/sshd && \
     mkdir -p /root/.ssh && \
-    sed -i "s/UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config && \
-    sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config && \
-    sed -i "s/PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config && \
-    echo "GatewayPorts yes" >> /etc/ssh/sshd_config && \
+    sed -i '/.*UsePrivilegeSeparation.*/s/^/# /' /etc/ssh/sshd_config && \
+    sed -i '/.*UsePAM.*/s/^/# /' /etc/ssh/sshd_config && \
+    sed -i '/.*PermitRootLogin.*/s/^/# /' /etc/ssh/sshd_config && \
+    sed -i '/.*GatewayPorts.*/s/^/# /' /etc/ssh/sshd_config && \
+    echo '# Docker configuration' >> /etc/ssh/sshd_config && \
+    echo 'UsePrivilegeSeparation no' >> /etc/ssh/sshd_config && \
+    echo 'UsePAM no' >> /etc/ssh/sshd_config && \
+    echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && \
+    echo 'GatewayPorts yes' >> /etc/ssh/sshd_config && \
     rm -rf /var/lib/apt/lists/*
 
 ADD run.sh /run.sh

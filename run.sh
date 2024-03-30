@@ -49,7 +49,7 @@ if [[ -n "${PUBLIC_HOST_ADDR}" && -n "${PUBLIC_HOST_PORT}" ]]; then
         echo "ROOT_PASS needs to be specified!"
     fi
 
-    echo "=> Connecting to Remote SSH servier ${PUBLIC_HOST_ADDR}:${PUBLIC_HOST_PORT}"
+    echo "=> Connecting to Remote SSH server ${PUBLIC_HOST_ADDR}:${PUBLIC_HOST_PORT}"
 
     KNOWN_HOSTS="/root/.ssh/known_hosts"
     if [ !-f ${KNOWN_HOST} ]; then

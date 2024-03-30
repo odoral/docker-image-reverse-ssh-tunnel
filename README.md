@@ -15,6 +15,7 @@ On public host, run:
     -e ROOT_PASS=<your_password> \
     -p <your_sshd_port>:22 \
     -p <forwarding_port>:1080 \
+    --name=rssh-tunnel-host \
     tifayuki/reverse-ssh-tunnel
 ```
 Parameters:
@@ -33,6 +34,7 @@ On NATed Host, run:
     -e ROOT_PASS=<your_password> \
     -e PROXY_PORT=<NATed_service_port> \
     --net=host \
+    --name=rssh-tunnel-natted \
     tifayuki/reverse-ssh-tunnel
 ```
 Parameters:
