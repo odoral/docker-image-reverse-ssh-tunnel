@@ -66,10 +66,14 @@ if [[ -n "${PUBLIC_HOST_ADDR}" && -n "${PUBLIC_HOST_PORT}" ]]; then
     cat ${KNOWN_HOSTS}
     echo "====REMOTE FINGERPRINT===="
 
+
+    echo "Copying ssh id to remote"
+    sshpass -p ${ROOT_PASS} ssh-copy-id -p ${PUBLIC_HOST_PORT} root@${PUBLIC_HOST_ADDR}
+
     echo "=> Setting up the reverse ssh tunnel"
     while true
     do
-        sshpass -p ${ROOT_PASS} autossh -M 0 -o StrictHostKeyChecking=no -NgR 1080:localhost:${PROXY_PORT} root@${PUBLIC_HOST_ADDR} -p ${PUBLIC_HOST_PORT}
+        autossh -M 0 -o StrictHostKeyChecking=no -o TCPKeepAlive=yes -o ServerAliveInterval=30 -o ExitOnForwardFailure=yes -NgR 1080:localhost:${PROXY_PORT} root@${PUBLIC_HOST_ADDR} -p ${PUBLIC_HOST_PORT}
         echo "=> Tunnel Link down!"
         echo "=> Wait 15 seconds to reconnect"
         sleep 15
@@ -77,6 +81,7 @@ if [[ -n "${PUBLIC_HOST_ADDR}" && -n "${PUBLIC_HOST_PORT}" ]]; then
     done
 else
     echo "=> Running in public host mode"
+    service fail2ban restart
     if [ ! -f /.root_pw_set ]; then
 	    SetRootPass
     fi
